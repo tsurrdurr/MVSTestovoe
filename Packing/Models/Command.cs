@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace SampleMVVM
+namespace Packing
 {
     public class Command : ICommand
     {

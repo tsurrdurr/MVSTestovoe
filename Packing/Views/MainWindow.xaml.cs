@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace SampleMVVM
+namespace Packing
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
