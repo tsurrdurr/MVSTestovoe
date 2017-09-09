@@ -39,6 +39,44 @@ namespace PackingTests
         }
 
         [Test]
+        public void EncodingTest()
+        {
+            var array =    new byte[] { 112, 113, 121 };
+            var expected = new byte[] { 240, 120, 30 };
+            var result = new Packer().PackBytes(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void EncodingTestLong()
+        {
+            var array =    new byte[] { 112, 113, 121, 127, 127, 127, 127, 127};
+            var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255  };
+            var result = new Packer().PackBytes(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void EncodingTestLonger()
+        {
+            var array = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127, 120 };
+            var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255, 120 };
+            var result = new Packer().PackBytes(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void EncodingTestDoubleSize()
+        {
+            var array = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127,
+                                     112, 113, 121, 127, 127, 127, 127, 127 };
+            var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255,
+                                        240, 120, 254, 255, 255, 255, 255 };
+            var result = new Packer().PackBytes(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
         public void SampleTest()
         {
             string input = "teststring";

@@ -25,19 +25,32 @@ namespace Packing
             int shiftsCounter = 1;
             double expected = ((double)bytes.Length * 7) / 8;
             int expectedLength = (int)Math.Ceiling(expected);
-            for (int i = 0; i < expectedLength; i++)
+            for (int i = 0; i < bytes.Length; i++)
             {
-                if (i + 1 < expectedLength)
+                if (i + 1 < bytes.Length)
                 {
                     int tail = GetTail(bytes[i + 1], shiftsCounter);
                     bytes[i] = (byte)(bytes[i] | tail);
                     bytes[i + 1] >>= shiftsCounter;
                 }
                 shiftsCounter++;
-                if (shiftsCounter == 7) shiftsCounter = 1;
+                if (shiftsCounter == 8)
+                {
+                    shiftsCounter = 1;
+                    ShiftWholeBytes(bytes, i);
+                }
             }
             bytes = bytes.Take(expectedLength).ToArray();
             return bytes;
+        }
+
+        private static void ShiftWholeBytes(byte[] bytes, int i)
+        {
+            for (int j = i + 1; j < bytes.Length - 1; j++)
+            {
+                bytes[j] = bytes[j + 1];
+                bytes[j + 1] = 0;
+            }
         }
 
         internal int GetTail(byte nextbyte, int shiftsCounter)
