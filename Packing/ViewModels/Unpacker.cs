@@ -18,23 +18,45 @@ namespace Packing
 
         internal byte[] Unpack(byte[] payload)
         {
-            payload = StretchArray(payload);
-            throw new NotImplementedException();
-        }
-
-        internal byte[] StretchArray(byte[] payload)
-        {
-            int extra = payload.Length / 7;
-            int expectedLength = payload.Length + extra;
-            Array.Resize(ref payload, expectedLength);
-            for(int i = 7; i < expectedLength; i+= 7)
+            int extraBytes = payload.Length / 7;
+            int expectedLength = payload.Length + extraBytes;
+            payload = StretchArray(payload, expectedLength);
+            int currentShift = 1;
+            byte lastTail = 0;
+            for(int i = 0; i < expectedLength; i++)
             {
-                for(int j = expectedLength - 1; j > i; j--)
+                if((i+1) % 8 != 0 || i == 0)
                 {
-                    payload[j] = payload[j - 1];
-                    payload[j - 1] = 0;
+                    byte shift = (byte)(255 << (8 - currentShift));
+                    var tail = (byte)((payload[i] & shift) >> (8 - currentShift));
+                    payload[i] <<= currentShift;
+                    payload[i] >>= 1;
+                    payload[i] |= lastTail;
+                    lastTail = tail;
+                    currentShift++;
+                }
+                else
+                {
+                    payload[i] = lastTail;
+                    lastTail = 0;
+                    currentShift = 1;
                 }
             }
+            return payload;
+        }
+
+        internal byte[] StretchArray(byte[] payload, int expectedLength)
+        {
+
+            Array.Resize(ref payload, expectedLength);
+            int i = 7;
+
+            for (int j = expectedLength - 1; j > i; j--)
+            {
+                payload[j] = payload[j - 1];
+                payload[j - 1] = 0;
+            }
+
             return payload;
         }
     }
