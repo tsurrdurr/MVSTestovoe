@@ -12,7 +12,7 @@ namespace PackingTests
     class InterfaceTests
     {
         [Test]
-        public void SampleTest()
+        public void EncodeDecodeTest_InputEnglish10SymbloString_ReturnsSameString()
         {
             string input = "teststring";
             var packer = new Packer();
@@ -22,8 +22,11 @@ namespace PackingTests
             Assert.AreEqual(input, result);
         }
 
+        /// <summary>
+        /// Тест предназначен для обнаружения багов цикличности
+        /// </summary>
         [Test]
-        public void CheekyTest()
+        public void EncodeDecodeTest_DoubleByteArrayAfterEncoding_ReturnsExpectedDoubledString()
         {
             string input = "testtest";
             var packer = new Packer();
@@ -34,8 +37,11 @@ namespace PackingTests
             Assert.AreEqual(input + input, result);
         }
 
+        /// <summary>
+        /// Тест предназначен для обнаружения багов цикличности
+        /// </summary>
         [Test]
-        public void CheekyTestAlternative()
+        public void EncodeDecodeTest_CutByteArrayInHalfAfterEncoding_ReturnsExpectedHalvedString()
         {
             string input = "testtesttesttest";
             var packer = new Packer();
@@ -47,7 +53,7 @@ namespace PackingTests
         }
 
         [Test]
-        public void SampleTestLong()
+        public void EncodeDecodeTest_InputEnglish64SymbloString_ReturnsSameString()
         {
             string input = "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttest";
             var packer = new Packer();

@@ -13,34 +13,58 @@ namespace PackingTests
     {
 
         [Test]
-        public void DecodingTest()
+        public void DecodingTest_InputArrayOfLength3_ReturnsExpected()
         {
-            var array = new byte[] { 240, 120, 30 };
+            var array = new byte[]    
+                                      { 240, 120, 30 };
             var expected = new byte[] { 112, 113, 121 };
             var result = new Unpacker().Unpack(array);
             CollectionAssert.AreEqual(expected, result);
         }
 
         [Test]
-        public void DecodingTestLong()
+        public void DecodingTest_InputArrayOfLength7_ReturnsExpected()
         {
-            var array = new byte[] { 240, 120, 254, 255, 255, 255, 255, 120 };
+            var array = new byte[]
+                                      { 240, 120, 254, 255, 255, 255, 255 };
+            var expected = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127 };
+            var result = new Unpacker().Unpack(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DecodingTest_InputArrayOfLength8_ReturnsExpected()
+        {
+            var array = new byte[]    
+                                      { 240, 120, 254, 255, 255, 255, 255, 120 };
             var expected = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127, 120 };
             var result = new Unpacker().Unpack(array);
             CollectionAssert.AreEqual(expected, result);
         }
 
         [Test]
-        public void StretchArrayTest()
+        public void DecodingTest_InputArrayOfLength16_ReturnsExpected()
         {
-            var array = new byte[] { 240, 120, 254, 255, 255, 255, 255, 120 };
+            var expected = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127,
+                                        112, 113, 121, 127, 127, 127, 127, 127 };
+            var array = new byte[] { 240, 120, 254, 255, 255, 255, 255,
+                                     240, 120, 254, 255, 255, 255, 255 };
+            var result = new Unpacker().Unpack(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+
+        [Test]
+        public void StretchArrayTest_InputArrayOfLength8_ReturnsExpected()
+        {
+            var array = new byte[]    { 240, 120, 254, 255, 255, 255, 255, 120 };
             var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255, 0, 120 };
             var result = new Unpacker().StretchArray(array, array.Length + 1);
             CollectionAssert.AreEqual(expected, result);
         }
 
         [Test]
-        public void StretchArrayTestLonger()
+        public void StretchArrayTest_InputArrayOfLength14_ReturnsExpected()
         {
             var array = new byte[] { 240, 120, 254, 255, 255, 255, 255,
                                      120, 254, 255, 255, 255, 255, 255 };
@@ -52,7 +76,7 @@ namespace PackingTests
         }
 
         [Test]
-        public void StretchArrayTestLongest()
+        public void StretchArrayTest_InputArrayOfLength15_ReturnsExpected()
         {
             var array = new byte[] { 240, 120, 254, 255, 255, 255, 255,
                                      120, 254, 255, 255, 255, 255, 255, 255 };
@@ -63,24 +87,5 @@ namespace PackingTests
             CollectionAssert.AreEqual(expected, result);
         }
 
-        [Test]
-        public void DecodingTestDoubleLength()
-        {
-            var expected = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127,
-                                        112, 113, 121, 127, 127, 127, 127, 127 };
-            var array = new byte[] { 240, 120, 254, 255, 255, 255, 255,
-                                     240, 120, 254, 255, 255, 255, 255 };
-            var result = new Unpacker().Unpack(array);
-            CollectionAssert.AreEqual(expected, result);
-        }
-
-        [Test]
-        public void DecodingTestLonger()
-        {
-            var array = new byte[] { 240, 120, 254, 255, 255, 255, 255 };
-            var expected = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127 };
-            var result = new Unpacker().Unpack(array);
-            CollectionAssert.AreEqual(expected, result);
-        }
     }
 }

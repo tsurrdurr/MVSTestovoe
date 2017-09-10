@@ -12,7 +12,7 @@ namespace PackingTests
     class PackerTests
     {
         [Test]
-        public void TailTest()
+        public void GetTailTest_Input01110001Shift1_Returns10000000()
         {
             byte value = 113;
             var result = new Packer().GetTail(value, 1);
@@ -20,7 +20,7 @@ namespace PackingTests
         }
 
         [Test]
-        public void TailTest2()
+        public void GetTailTest_Input01110001Shift2_Returns01000000()
         {
             byte value = 113;
             var result = new Packer().GetTail(value, 2);
@@ -28,7 +28,7 @@ namespace PackingTests
         }
 
         [Test]
-        public void TailTest3()
+        public void GetTailTest_Input01110011Shift2_Returns11000000()
         {
             byte value = 115;
             var result = new Packer().GetTail(value, 2);
@@ -36,34 +36,37 @@ namespace PackingTests
         }
 
         [Test]
-        public void EncodingTest()
+        public void EncodingTest_InputArrayOfLength3_ReturnsExpected()
         {
-            var array = new byte[] { 112, 113, 121 };
+            var array = new byte[] 
+                                      { 112, 113, 121 };
             var expected = new byte[] { 240, 120, 30 };
             var result = new Packer().PackBytes(array);
             CollectionAssert.AreEqual(expected, result);
         }
 
         [Test]
-        public void EncodingTestLong()
+        public void EncodingTest_InputArrayOfLength8_ReturnsExpected()
         {
-            var array = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127 };
+            var array = new byte[] 
+                                      { 112, 113, 121, 127, 127, 127, 127, 127 };
             var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255 };
             var result = new Packer().PackBytes(array);
             CollectionAssert.AreEqual(expected, result);
         }
 
         [Test]
-        public void EncodingTestLonger()
+        public void EncodingTest_InputArrayOfLength9_ReturnsExpected()
         {
-            var array = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127, 120 };
+            var array = new byte[] 
+                                      { 112, 113, 121, 127, 127, 127, 127, 127, 120 };
             var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255, 120 };
             var result = new Packer().PackBytes(array);
             CollectionAssert.AreEqual(expected, result);
         }
 
         [Test]
-        public void EncodingTestDoubleSize()
+        public void EncodingTest_InputArrayOfLength16_ReturnsExpected()
         {
             var array = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127,
                                      112, 113, 121, 127, 127, 127, 127, 127 };
