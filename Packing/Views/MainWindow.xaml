@@ -5,56 +5,64 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Packing"
         mc:Ignorable="d"
-        Title="Packing" Height="99.133" Width="525">
+        Title="Packing" Height="313.584" Width="525">
     <d:DesignProperties.DataContext>
         <local:MainViewModel />
     </d:DesignProperties.DataContext>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
-            <TextBox Text="{Binding UnpackedText}" 
-                 Height="50" 
-                 VerticalAlignment="Top"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <TextBox Text="{Binding UnpackedText}" Height="73" VerticalAlignment="Top"/>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Button Content="> To bytes >"
+                    Command="{Binding BytifyCommand}" 
+                    Height="20" 
+                    Margin="0,0,0,0" 
+                    VerticalAlignment="Top"/>
+                <Button Content="&lt; To text &lt;"
+                    Command="{Binding UnbytifyCommand}" 
+                    Height="20" 
+                    Margin="0,20,0,0" 
+                    VerticalAlignment="Top"/>
+            </Grid>
+            <Grid Grid.Column="2">
+                <TextBox Text="{Binding BytesText}" 
+                         
+                         Margin="0,0,0,10"/>
+            </Grid>
+            <Grid Grid.Column="3">
+                <Button Content="> Pack >"
+                    Command="{Binding PackingCommand}" 
+                    Height="20" 
+                    Margin="0,0,0,0" 
+                    VerticalAlignment="Top"/>
+                <Button Content="&lt; Unpack &lt;"
+                    Command="{Binding UnpackingCommand}" 
+                    Height="20" 
+                    Margin="0,20,0,0" 
+                    VerticalAlignment="Top"/>
+            </Grid>
+            <Grid Grid.Column="4">
+                <TextBox Text="{Binding PackedText}" Margin="0,0,0,10"/>
+            </Grid>
         </Grid>
-        <Grid Grid.Column="1">
-            <Button Content="> To bytes >"
-                Command="{Binding BytifyCommand}" 
-                Height="20" 
-                Margin="0,0,0,0" 
-                VerticalAlignment="Top"/>
-            <Button Content="&lt; To text &lt;"
-                Command="{Binding UnbytifyCommand}" 
-                Height="20" 
-                Margin="0,20,0,0" 
-                VerticalAlignment="Top"/>
-        </Grid>
-        <Grid Grid.Column="2">
-            <TextBox Text="{Binding BytesText}" 
-                 Height="50" 
-                 VerticalAlignment="Top"/>
-        </Grid>
-        <Grid Grid.Column="3">
-            <Button Content="> Pack >"
-                Command="{Binding PackingCommand}" 
-                Height="20" 
-                Margin="0,0,0,0" 
-                VerticalAlignment="Top"/>
-            <Button Content="&lt; Unpack &lt;"
-                Command="{Binding UnpackingCommand}" 
-                Height="20" 
-                Margin="0,20,0,0" 
-                VerticalAlignment="Top"/>
-        </Grid>
-        <Grid Grid.Column="4">
-            <TextBox Text="{Binding PackedText}" 
-                 Height="50" 
-                 VerticalAlignment="Top"/>
-        </Grid>
+        <StatusBar Grid.Row="2">
+            <StatusBarItem>
+                <TextBlock Text="{Binding Status}"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

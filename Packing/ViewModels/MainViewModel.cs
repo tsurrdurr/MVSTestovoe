@@ -5,11 +5,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Packing
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        public MainViewModel()
+        {
+            time.Elapsed += Time_Elapsed;
+        }
 
         public Command PackingCommand => _packingCommand ?? (_packingCommand = new Command(Pack));
         public Command UnpackingCommand => _unpackingCommand ?? (_unpackingCommand = new Command(Unpack));
@@ -21,7 +26,7 @@ namespace Packing
             get => _packedText;
             set
             {
-                if(_packedText != value)
+                if (_packedText != value)
                 {
                     _packedText = value;
                     OnPropertyChanged(nameof(PackedText));
@@ -55,6 +60,26 @@ namespace Packing
             }
         }
 
+        public string Status
+        {
+            get => _status;
+            set
+            {
+                if (_status != value)
+                {
+                    _status = value;
+                    OnPropertyChanged(nameof(Status));
+                    time.Enabled = true;
+                }
+            }
+        }
+
+        private Timer time = new Timer
+        {
+            Interval = 2000,
+            Enabled = false
+        };
+
         private Command _packingCommand;
         private Command _unpackingCommand;
         private Command _bytifyCommand;
@@ -63,32 +88,64 @@ namespace Packing
         private string _packedText;
         private string _unpackedText;
         private string _bytesText;
+        private string _status;
+        private const string invalidInputMessage = "Неверный ввод";
 
         private void TextToBytes()
         {
-            var bytes = Encoding.UTF8.GetBytes(UnpackedText);
-            BytesText = BytesToBitRows(bytes);
+            try
+            {
+                var bytes = Encoding.UTF8.GetBytes(UnpackedText);
+                BytesText = BytesToBitRows(bytes);
+            }
+            catch (Exception ex)
+            {
+                Status = invalidInputMessage;
+            }
         }
 
         private void BytesToText()
         {
-            var bytes = BitRowsToBytes(BytesText);
-            UnpackedText = Encoding.UTF8.GetString(bytes);
+            try
+            {
+                var bytes = BitRowsToBytes(BytesText);
+                UnpackedText = Encoding.UTF8.GetString(bytes);
+            }
+            catch (Exception ex)
+            {
+                if (ex is FormatException) Status = ex.Message;
+                else Status = invalidInputMessage;
+            }
         }
 
         private void Pack()
         {
-            var worker = new Packer();
-            var bytes = worker.Encode(UnpackedText);
-            PackedText = BytesToBitRows(bytes);
+            try
+            {
+                var worker = new Packer();
+                var bytes = worker.Encode(UnpackedText);
+                PackedText = BytesToBitRows(bytes);
+            }
+            catch (Exception ex)
+            {
+                Status = invalidInputMessage;
+            }
         }
 
         private void Unpack()
         {
-            var worker = new Unpacker();
-            var parsedBytes = BitRowsToBytes(PackedText);
-            UnpackedText = worker.Decode(parsedBytes);
-        }
+            try
+            {
+                var worker = new Unpacker();
+                var parsedBytes = BitRowsToBytes(PackedText);
+                UnpackedText = worker.Decode(parsedBytes);
+            }
+            catch (Exception ex)
+            {
+                if (ex is FormatException) Status = ex.Message;
+                else Status = invalidInputMessage;
+            }
+}
 
         private string BytesToBitRows(byte[] bytes)
         {
@@ -108,17 +165,18 @@ namespace Packing
             var parsedBytes = new List<byte>();
             foreach (var line in lines)
             {
-                try
-                {
-                    var item = Convert.ToByte(line, 2);
-                    parsedBytes.Add(item);
-                }
-                catch (Exception ex)
-                {
-                    // TODO: handle
-                }
-            };
+                if (line.Length > 8) throw new FormatException("Значение длиной больше байта");
+                var item = Convert.ToByte(line, 2);
+                parsedBytes.Add(item);
+            }
             return parsedBytes.ToArray();
+
+        }
+
+        private void Time_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Status = "";
+            time.Enabled = false;
         }
 
         #region INotifyPropertyChanged
