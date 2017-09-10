@@ -14,34 +14,31 @@ namespace PackingTests
         [Test]
         public void TailTest()
         {
-            var packer = new Packer();
             byte value = 113;
-            var result = packer.GetTail(value, 1);
+            var result = new Packer().GetTail(value, 1);
             Assert.AreEqual(128, result);
         }
 
         [Test]
         public void TailTest2()
         {
-            var packer = new Packer();
             byte value = 113;
-            var result = packer.GetTail(value, 2);
+            var result = new Packer().GetTail(value, 2);
             Assert.AreEqual(64, result);
         }
 
         [Test]
         public void TailTest3()
         {
-            var packer = new Packer();
             byte value = 115;
-            var result = packer.GetTail(value, 2);
+            var result = new Packer().GetTail(value, 2);
             Assert.AreEqual(192, result);
         }
 
         [Test]
         public void EncodingTest()
         {
-            var array =    new byte[] { 112, 113, 121 };
+            var array = new byte[] { 112, 113, 121 };
             var expected = new byte[] { 240, 120, 30 };
             var result = new Packer().PackBytes(array);
             CollectionAssert.AreEqual(expected, result);
@@ -50,8 +47,8 @@ namespace PackingTests
         [Test]
         public void EncodingTestLong()
         {
-            var array =    new byte[] { 112, 113, 121, 127, 127, 127, 127, 127};
-            var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255  };
+            var array = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127 };
+            var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255 };
             var result = new Packer().PackBytes(array);
             CollectionAssert.AreEqual(expected, result);
         }
@@ -73,6 +70,53 @@ namespace PackingTests
             var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255,
                                         240, 120, 254, 255, 255, 255, 255 };
             var result = new Packer().PackBytes(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DecodingTest()
+        {
+            var array = new byte[] { 240, 120, 30 };
+            var expected = new byte[] { 112, 113, 121 };
+            var result = new Unpacker().Unpack(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DecodingTestLong()
+        {
+            var array = new byte[] { 240, 120, 254, 255, 255, 255, 255, 120 };
+            var expected = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127, 120 };
+            var result = new Unpacker().Unpack(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void StretchArrayTest()
+        {
+            var array = new byte[] { 240, 120, 254, 255, 255, 255, 255, 120 };
+            var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255, 0, 120 };
+            var result = new Unpacker().StretchArray(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DecodingTestDoubleLength()
+        {
+            var expected = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127,
+                                     112, 113, 121, 127, 127, 127, 127, 127 };
+            var array= new byte[] { 240, 120, 254, 255, 255, 255, 255,
+                                        240, 120, 254, 255, 255, 255, 255 };
+            var result = new Unpacker().Unpack(array);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DecodingTestLonger()
+        {
+            var array = new byte[] { 240, 120, 254, 255, 255, 255, 255 };
+            var expected = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127 };
+            var result = new Unpacker().Unpack(array);
             CollectionAssert.AreEqual(expected, result);
         }
 

@@ -14,10 +14,7 @@ namespace Packing
         {
             var bytes = Encoding.UTF8.GetBytes(message);
             if (bytes.Any(x => x > 127)) throw new Exception("Can't be packed into 7-bit");
-            else
-            {
-                return PackBytes(bytes);
-            }
+            else return PackBytes(bytes);
         }
 
         internal byte[] PackBytes(byte[] bytes)
@@ -44,7 +41,14 @@ namespace Packing
             return bytes;
         }
 
-        private static void ShiftWholeBytes(byte[] bytes, int i)
+        internal int GetTail(byte nextbyte, int shiftsCounter)
+        {
+            var shift = 7 - shiftsCounter;
+            var mask = (byte)Math.Pow(2, shiftsCounter) - 1;
+            return (byte)(nextbyte & mask) << shift + 1;
+        }
+
+        private void ShiftWholeBytes(byte[] bytes, int i)
         {
             for (int j = i + 1; j < bytes.Length - 1; j++)
             {
@@ -53,11 +57,5 @@ namespace Packing
             }
         }
 
-        internal int GetTail(byte nextbyte, int shiftsCounter)
-        {
-            var shift = 7 - shiftsCounter;
-            var mask = (byte)Math.Pow(2, shiftsCounter) - 1;
-            return (byte)(nextbyte & mask) << shift + 1;
-        }
     }
 }
