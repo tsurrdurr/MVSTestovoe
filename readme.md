@@ -1,18 +1,74 @@
-## SampleMVVMRepo
+# MVSTestovoe
 
-Since Visual Studio atm doesn't have a scaffolder or something for vanilla MVVM projects, I will use this repository.  
+## Установка и запуск ##
+Открыть решение и запустить желаемый проект или тесты.  
 
-The sole purpose of it is making it faster for me to start an MVVM project.
+## Структура и функции ##
 
+Решение состоит из 3 проектов:  
+- Упаковщик байт;  
+- Тесты упаковщика;  
+- Общий стек через Web API.   
 
-Steps to changing the name are following:
-1) Project -> Properties: Change names there
-2) Project -> Properties -> Assembly information...: Also change here
-3) Solution Explorer -> Select project -> F2
-4) Close IDE
-5) Open project folder where .sln file is, rename .sln, rename folder there
-6) Open .sln, edit path to the only csproj
-7) Open solution
-8) Ctrl+R on namespace name
-9) Ctrl+Shift+F old name just to be sure it's erased from human history
-10) Done. That was easy, right?
+### Packing ###
+
+Состоит из 2 основных классов - `Packer` и `Unpacker`.  
+Публичный интерфейс `Packer`:
+```
+public byte[] Encode(string message)
+{
+    <...>
+} 
+```
+производит упаковку строк из символов 7-битовой длины в массив байт. Например:  
+```
+ _______________________________________________
+|Текст     | Биты UTF-8 | Биты после упаковки   |
+|-----------------------------------------------|
+|testtest  | 01110100   | 1 1110100             |
+|          | 01100101   | 11 110010             |
+|          | 01110011   | 100 11100             |
+|          | 01110100   | 0100 1110             |
+|          | 01110100   | 00101 111             |
+|          | 01100101   | 110011 11             |
+|          | 01110011   | 1110100 1             |
+|          | 01110100   |                       |
+ -----------------------------------------------
+```
+
+Публичный интерфейс `Unpacker`:
+```
+public string Decode(byte[] payload)
+{
+    <...>
+}
+```
+обращает это преобразование, позволяя снова получить текст.
+  
+На главном окне программы `MainWindow.xaml` наглядно представляется текст в виде битов, как показано в таблице выше. Также на нём можно модифицировать этоу запись и посмотреть, что получится при распаковке.  
+При разработке использовался паттерн MVVM.
+
+### PackingTests ### 
+
+Проект, содержащий тесты.  
+Тесты разделены между 3 классами:
+- `PackerTests` и `UnpackerTests`: тесты `internal` методов, которые использовались для TDD.
+- `InterfaceTests`: тесты `public` методов.  
+При именовании тестов используется нотация: `ТестируемаяФункция_ВходныеДанные_ОжидаемыйРезультат`
+
+### StackWebAPI ###
+
+Представляет собой реализацию механизма многопользовательского стека строк с возможностью операций `push, pop, peek, size` над стеком.   
+Предоставляет API для выполнения этих операций. 
+
+Основные элементы:  
+1) `MainController.cs` - контроллер, обрабатывающий все вызовы API. Имеет следующие пути:
+```
+/api/main/push
+/api/main/pop
+/api/main/peek
+/api/main/size
+``` 
+2) `CommonStack.cs` - модель-синглтон (а также фасад для объекта стандартного класса Stack), отвечающая за хранение стека и предоставляющий своих функции контроллеру: `Push(string item), Peek(), Pop(), GetSize()`.  
+3) `index.html` - простейшая веб-страница, позволяющая пользователю пользоваться функциями API.
+
