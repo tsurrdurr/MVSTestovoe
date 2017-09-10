@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packing", "Packing\Packing.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackingTests", "PackingTests\PackingTests.csproj", "{1C98E230-9B50-4BA2-A48C-E241B0EEBBF8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackWebAPI", "StackWebAPI\StackWebAPI.csproj", "{45804CE6-0FB9-40F0-9E86-33A1D1233396}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1C98E230-9B50-4BA2-A48C-E241B0EEBBF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C98E230-9B50-4BA2-A48C-E241B0EEBBF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C98E230-9B50-4BA2-A48C-E241B0EEBBF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45804CE6-0FB9-40F0-9E86-33A1D1233396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45804CE6-0FB9-40F0-9E86-33A1D1233396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45804CE6-0FB9-40F0-9E86-33A1D1233396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45804CE6-0FB9-40F0-9E86-33A1D1233396}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

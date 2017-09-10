@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>StackWebAPI</title>
+</head>
+<body>
+    <h2>StackWebAPI</h2>    
+    <div>
+        <input type="text" id="stackSize" size="5" />
+        &lt;&lt;
+        <input type="button" value="Размер стека" onclick="getSize();" />
+        <p id="main" />
+    </div>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+    var uri = '/api/main';
+
+    $(document).ready(function () {
+      
+    });
+
+    function formatItem(item) {
+      return item.Name + ': $' + item.Price;
+    }
+
+    function getSize() {
+        $.getJSON(uri + '/' + "size")
+          .done(function (data) {
+            console.log('test');
+            document.getElementById('stackSize').value = data;
+          })
+          .fail(function (jqXHR, textStatus, err) {
+            document.getElementById('stackSize').value = 'Error: ' + err;
+          });
+    }
+    </script>
+</body>
+</html>
