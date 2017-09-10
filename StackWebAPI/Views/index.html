@@ -4,7 +4,25 @@
     <title>StackWebAPI</title>
 </head>
 <body>
-    <h2>StackWebAPI</h2>    
+    <h2>StackWebAPI</h2>  
+    <div>
+        <input type="text" id="pushedValue" size="5" />
+        &gt;&gt;
+        <input type="button" value="Push" onclick="pushValue();" />
+        <p id="main" />
+    </div>
+    <div>
+        <input type="text" id="poppedValue" size="5" />
+        &lt;&lt;
+        <input type="button" value="Pop" onclick="popValue();" />
+        <p id="main" />
+    </div>
+    <div>
+        <input type="text" id="peekedValue" size="5" />
+        &lt;&lt;
+        <input type="button" value="Peek" onclick="peekValue();" />
+        <p id="main" />
+    </div>  
     <div>
         <input type="text" id="stackSize" size="5" />
         &lt;&lt;
@@ -23,6 +41,36 @@
       return item.Name + ': $' + item.Price;
     }
 
+    function pushValue() {
+      var txt = document.getElementById('pushedValue').value;
+      console.log('push ' + txt);
+      $.post(uri + '/' + 'push', '=' + txt, function(response) {
+        console.log('response');
+      }, 'json');
+    }
+
+    function popValue() {
+      $.getJSON(uri + '/' + 'pop')
+        .done(function (data) {
+          console.log('pop');
+          document.getElementById('poppedValue').value = data;
+        })
+        .fail(function (jqXHR, textStatus, err) {
+          document.getElementById('poppedValue').value = 'Error: ' + err;
+        });
+    }
+
+    function peekValue() {
+      $.getJSON(uri + '/' + 'peek')
+        .done(function (data) {
+          console.log('peek');
+          document.getElementById('peekedValue').value = data;
+        })
+        .fail(function (jqXHR, textStatus, err) {
+          document.getElementById('peekedValue').value = 'Error: ' + err;
+        });
+    }
+
     function getSize() {
         $.getJSON(uri + '/' + "size")
           .done(function (data) {
@@ -33,6 +81,7 @@
             document.getElementById('stackSize').value = 'Error: ' + err;
           });
     }
+
     </script>
 </body>
 </html>

@@ -4,17 +4,18 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace StackWebAPI.Controllers
 {
     public class MainController : ApiController
     {
-        private MyStack myStack = new MyStack( new string[]
-            {
-            "test",
-            "123"
-            }
-        );
+        public MainController()
+        {
+            
+        }
+
+        private CommonStack commonStack = CommonStack.Instance;
 
         [HttpGet]
         [ActionName("Peek")]
@@ -22,7 +23,7 @@ namespace StackWebAPI.Controllers
         {
             try
             {
-                var value = myStack.Peek();
+                var value = commonStack.Peek();
                 return Json(value);
             }
             catch
@@ -37,23 +38,25 @@ namespace StackWebAPI.Controllers
         {
             try
             {
-                var value = myStack.Pop();
+                var value = commonStack.Pop();
                 return Json(value);
             }
-            catch
+            catch(Exception ex)
             {
+                if (ex is InvalidOperationException) return BadRequest("Стек пуст");
                 return BadRequest();
             }
         }
 
         [HttpPost]
+        [ResponseType(typeof(string))]
         [ActionName("Push")]
-        public IHttpActionResult PushStack(string text)
+        public IHttpActionResult PushStack([FromBody] string text)
         {
             try
             {
                 if (text == null) throw new ArgumentNullException();
-                myStack.Push(text);
+                commonStack.Push(text);
                 return Ok();
             }
             catch
@@ -68,7 +71,7 @@ namespace StackWebAPI.Controllers
         {
             try
             {
-                var value = myStack.GetSize();
+                var value = commonStack.GetSize();
                 return Json(value);
             }
             catch
