@@ -47,16 +47,17 @@ namespace Packing
 
         internal byte[] StretchArray(byte[] payload, int expectedLength)
         {
-
             Array.Resize(ref payload, expectedLength);
-            int i = 7;
-
-            for (int j = expectedLength - 1; j > i; j--)
+            int iterations = (payload.Length + 1) / 8;
+            int i = 8;
+            for (int iterNum = 1; iterNum <= iterations; iterNum++)
             {
-                payload[j] = payload[j - 1];
-                payload[j - 1] = 0;
+                for (int j = expectedLength - 1; j > (i*iterNum) - 1; j--)
+                {
+                    payload[j] = payload[j - 1];
+                    payload[j - 1] = 0;
+                }
             }
-
             return payload;
         }
     }

@@ -52,6 +52,18 @@ namespace PackingTests
         }
 
         [Test]
+        public void StretchArrayTestLongest()
+        {
+            var array = new byte[] { 240, 120, 254, 255, 255, 255, 255,
+                                     120, 254, 255, 255, 255, 255, 255, 255 };
+            var expected = new byte[] { 240, 120, 254, 255, 255, 255, 255, 0,
+                                        120, 254, 255, 255, 255, 255, 255, 0, 255 };
+            int extraBytes = array.Length / 7;
+            var result = new Unpacker().StretchArray(array, array.Length + extraBytes);
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
         public void DecodingTestDoubleLength()
         {
             var expected = new byte[] { 112, 113, 121, 127, 127, 127, 127, 127,
