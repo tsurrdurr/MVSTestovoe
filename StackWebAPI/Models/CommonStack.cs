@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace StackWebAPI
 {
@@ -11,14 +10,6 @@ namespace StackWebAPI
         private static object syncLock = new object();
 
         private CommonStack() { }
-
-        //public CommonStack(string[] items)
-        //{
-        //    foreach(var item in items)
-        //    {
-        //        _stack.Push(item);
-        //    }
-        //}
 
         public static CommonStack Instance
         {

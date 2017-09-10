@@ -6,25 +6,25 @@
 <body>
     <h2>StackWebAPI</h2>  
     <div>
-        <input type="text" id="pushedValue" size="5" />
+        <input type="text" id="pushedValue" size="25" />
         &gt;&gt;
         <input type="button" value="Push" onclick="pushValue();" />
         <p id="main" />
     </div>
     <div>
-        <input type="text" id="poppedValue" size="5" />
+        <input type="text" id="poppedValue" size="25" />
         &lt;&lt;
         <input type="button" value="Pop" onclick="popValue();" />
         <p id="main" />
     </div>
     <div>
-        <input type="text" id="peekedValue" size="5" />
+        <input type="text" id="peekedValue" size="25" />
         &lt;&lt;
         <input type="button" value="Peek" onclick="peekValue();" />
         <p id="main" />
     </div>  
     <div>
-        <input type="text" id="stackSize" size="5" />
+        <input type="text" id="stackSize" size="25" />
         &lt;&lt;
         <input type="button" value="Размер стека" onclick="getSize();" />
         <p id="main" />
@@ -44,9 +44,16 @@
     function pushValue() {
       var txt = document.getElementById('pushedValue').value;
       console.log('push ' + txt);
-      $.post(uri + '/' + 'push', '=' + txt, function(response) {
-        console.log('response');
-      }, 'json');
+      $.post(uri + '/' + 'push', '=' + txt, function(response) 
+      { 
+        console.log('push success');
+        document.getElementById('pushedValue').value = response;
+      }, 
+      'json')
+      .fail(function (jqXHR, textStatus, err) {
+          document.getElementById('pushedValue').value = 'Ошибка: ' + trimResponse(jqXHR.responseText);
+        });
+      
     }
 
     function popValue() {
@@ -56,7 +63,7 @@
           document.getElementById('poppedValue').value = data;
         })
         .fail(function (jqXHR, textStatus, err) {
-          document.getElementById('poppedValue').value = 'Error: ' + err;
+          document.getElementById('poppedValue').value = 'Ошибка: ' + trimResponse(jqXHR.responseText);
         });
     }
 
@@ -67,7 +74,7 @@
           document.getElementById('peekedValue').value = data;
         })
         .fail(function (jqXHR, textStatus, err) {
-          document.getElementById('peekedValue').value = 'Error: ' + err;
+          document.getElementById('peekedValue').value = 'Ошибка: ' +  trimResponse(jqXHR.responseText);
         });
     }
 
@@ -78,8 +85,12 @@
             document.getElementById('stackSize').value = data;
           })
           .fail(function (jqXHR, textStatus, err) {
-            document.getElementById('stackSize').value = 'Error: ' + err;
+            document.getElementById('stackSize').value = 'Ошибка: ' + trimResponse(jqXHR.responseText);
           });
+    }
+
+    function trimResponse(text) {
+        return text.replace(/^"(.*)"$/, '$1');
     }
 
     </script>

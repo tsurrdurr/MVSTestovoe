@@ -16,19 +16,22 @@ namespace StackWebAPI.Controllers
         }
 
         private CommonStack commonStack = CommonStack.Instance;
+        private const string emptyStack = "Стек пуст";
 
-        [HttpGet]
-        [ActionName("Peek")]
-        public IHttpActionResult PeekStack()
+        [HttpPost]
+        [ResponseType(typeof(string))]
+        [ActionName("Push")]
+        public IHttpActionResult PushStack([FromBody] string text)
         {
             try
             {
-                var value = commonStack.Peek();
-                return Json(value);
+                if (text == null) throw new ArgumentNullException();
+                commonStack.Push(text);
+                return Content(HttpStatusCode.OK, "Успешно");
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return Content(HttpStatusCode.BadRequest, ex.Message);
             }
         }
 
@@ -41,27 +44,26 @@ namespace StackWebAPI.Controllers
                 var value = commonStack.Pop();
                 return Json(value);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if (ex is InvalidOperationException) return BadRequest("Стек пуст");
-                return BadRequest();
+                if (ex is InvalidOperationException) return Content(HttpStatusCode.BadRequest, emptyStack);
+                return Content(HttpStatusCode.BadRequest, ex.Message);
             }
         }
 
-        [HttpPost]
-        [ResponseType(typeof(string))]
-        [ActionName("Push")]
-        public IHttpActionResult PushStack([FromBody] string text)
+        [HttpGet]
+        [ActionName("Peek")]
+        public IHttpActionResult PeekStack()
         {
             try
             {
-                if (text == null) throw new ArgumentNullException();
-                commonStack.Push(text);
-                return Ok();
+                var value = commonStack.Peek();
+                return Json(value);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                if (ex is InvalidOperationException) return Content(HttpStatusCode.BadRequest, emptyStack);
+                return Content(HttpStatusCode.BadRequest, ex.Message);
             }
         }
 
@@ -74,9 +76,9 @@ namespace StackWebAPI.Controllers
                 var value = commonStack.GetSize();
                 return Json(value);
             }
-            catch
+            catch(Exception ex)
             {
-                return BadRequest();
+                return Content(HttpStatusCode.BadRequest, ex.Message);
             }
         }
     }
